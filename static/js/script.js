@@ -1,190 +1,253 @@
 /*=========================================
         NOVA AI ASSISTANT
 =========================================*/
+
 // Elements
 const startBtn = document.getElementById("start-btn");
 const startChatBtn = document.getElementById("start-chat");
 const endBtn = document.getElementById("end-btn");
 const clearBtn = document.getElementById("clear-btn");
+
 const userText = document.getElementById("user-text");
 const aiText = document.getElementById("ai-text");
 const statusText = document.getElementById("status-text");
+
 // Speech Recognition
 const SpeechRecognition =
 window.SpeechRecognition ||
 window.webkitSpeechRecognition;
+
 const recognition = new SpeechRecognition();
+
 recognition.lang = "en-US";
 recognition.continuous = true;
 recognition.interimResults = false;
-// Variables
+
 let listening = false;
-let audioPlayer = null;
+
 //=========================================
-// START LISTENING
+// Start Listening
 //=========================================
+
 function startListening(){
+
     if(listening) return;
+
     listening = true;
+
     statusText.innerHTML="🎤 Listening...";
+
     recognition.start();
+
 }
+
 //=========================================
-// STOP LISTENING
+// Stop Listening
 //=========================================
+
 function stopListening(){
-    listening = false;
+
+    listening=false;
+
     recognition.stop();
+
+    speechSynthesis.cancel();
+
     statusText.innerHTML="🔴 Chat Ended";
-    // Stop AI Voice
-    if(audioPlayer){
-        audioPlayer.pause();
-        audioPlayer.currentTime = 0;
-    }
+
 }
+
 //=========================================
-// BUTTON EVENTS
+// Buttons
 //=========================================
-startBtn.onclick = startListening;
-startChatBtn.onclick = startListening;
-endBtn.onclick = stopListening;
-//=========================================
-// NEW CHAT
-//=========================================
-clearBtn.onclick = ()=>{
+
+startBtn.onclick=startListening;
+startChatBtn.onclick=startListening;
+endBtn.onclick=stopListening;
+
+clearBtn.onclick=()=>{
+
     stopListening();
+
     userText.innerHTML="Waiting for your voice...";
+
     aiText.innerHTML="Hello 👋<br><br>Ask me anything...";
+
     statusText.innerHTML="🟢 Ready";
+
 }
+
 //=========================================
-// SPEECH RESULT
+// AI Voice using Browser TTS
 //=========================================
-recognition.onresult = async (event) => {
-    // Stop old voice if it is still playing
-if(audioPlayer){
-    audioPlayer.pause();
-    audioPlayer.currentTime = 0;
+
+function speak(text){
+
+    speechSynthesis.cancel();
+
+    const utterance = new SpeechSynthesisUtterance(text);
+
+    utterance.lang="en-US";
+
+    utterance.rate=1;
+
+    utterance.pitch=1;
+
+    statusText.innerHTML="🔊 Speaking...";
+
+    utterance.onend=()=>{
+
+        if(listening){
+
+            statusText.innerHTML="🎤 Listening...";
+
+            setTimeout(()=>{
+
+                try{
+
+                    recognition.start();
+
+                }
+                catch(e){}
+
+            },500);
+
+        }
+
+    };
+
+    speechSynthesis.speak(utterance);
+
 }
-    const last = event.results.length - 1;
-    const message = event.results[last][0].transcript.trim();
+
+//=========================================
+// Speech Result
+//=========================================
+
+recognition.onresult=async(event)=>{
+
+    const last=event.results.length-1;
+
+    const message=event.results[last][0].transcript.trim();
+
     if(message==="") return;
-    userText.innerHTML = message;
-    statusText.innerHTML = "🤖 Thinking...";
+
+    userText.innerHTML=message;
+
+    statusText.innerHTML="🤖 Thinking...";
+
     try{
-        const response = await fetch("/chat",{
+
+        recognition.stop();
+
+        const response=await fetch("/chat",{
+
             method:"POST",
+
             headers:{
+
                 "Content-Type":"application/json"
+
             },
+
             body:JSON.stringify({
+
                 message:message
+
             })
+
         });
-        const data = await response.json();
-        aiText.innerHTML = data.reply;
-        statusText.innerHTML = "🟢 Ready";
-        // Play Voice
-        if(data.audio){
-            if(audioPlayer){
-                audioPlayer.pause();
-                audioPlayer.currentTime = 0;
-            }
-            audioPlayer = new Audio(data.audio + "?t=" + new Date().getTime());
-            // Pause microphone while AI speaks
-try{
-    recognition.stop();
-}
-catch(e){}
-statusText.innerHTML="🔊 Speaking...";
-audioPlayer.play();
-        }
+
+        const data=await response.json();
+
+        aiText.innerHTML=data.reply;
+
+        speak(data.reply);
+
     }
+
     catch(error){
-        aiText.innerHTML =
-        "Server Error. Please try again.";
-        statusText.innerHTML = "❌ Error";
+
+        aiText.innerHTML="Server Error. Please try again.";
+
+        statusText.innerHTML="❌ Error";
+
     }
-    setTimeout(()=>{
-    if(listening){
-        statusText.innerHTML="🎤 Listening...";
-    }
-},5000);
+
 };
+
 //=========================================
-// RESTART LISTENING AUTOMATICALLY
+// Restart Recognition
 //=========================================
-recognition.onend = () => {
-    if(listening){
-        setTimeout(()=>{
-            try{
-                recognition.start();
-            }
-            catch(e){}
-        },500);
-    }
-};
-//=========================================
-// RECOGNITION ERRORS
-//=========================================
-recognition.onerror = (event)=>{
-    console.log(event.error);
-    if(event.error==="not-allowed"){
-        statusText.innerHTML="❌ Microphone Permission Denied";
-        listening=false;
-        return;
-    }
-    if(event.error==="no-speech"){
-        statusText.innerHTML="🎤 Listening...";
-        return;
-    }
-    if(event.error==="aborted"){
-        return;
-    }
-    statusText.innerHTML="⚠ Microphone Error";
-};
-//=========================================
-// AFTER AI FINISHES SPEAKING
-//=========================================
-document.addEventListener("click",()=>{
-    if(audioPlayer){
-        audioPlayer.onended = () => {
-    if(listening){
-        statusText.innerHTML="🎤 Listening...";
-        setTimeout(()=>{
-            try{
-                recognition.start();
-            }
-            catch(e){}
-        },400);
-    }
-}
-            }
+
+recognition.onend=()=>{
+
+    if(listening && !speechSynthesis.speaking){
+
+        try{
+
+            recognition.start();
+
         }
-    );
-//=========================================
-// SETTINGS BUTTON
-//=========================================
-const settingsBtn=document.getElementById("settings-btn");
-if(settingsBtn){
-settingsBtn.onclick=()=>{
-alert(
-`Nova AI Assistant
-Version : 2.0
-Language : English
-Backend : Flask
-LLM : Groq (Llama 3.1)
-Speech : Google Speech Recognition
-Voice : Google TTS`
-);
-}
-}
-//=========================================
-// PAGE LOAD
-//=========================================
-window.onload=()=>{
-statusText.innerHTML="🟢 Ready";
-userText.innerHTML="Waiting for your voice...";
-aiText.innerHTML="Hello 👋<br><br>How can I help you today?";
+
+        catch(e){}
+
+    }
+
 };
-console.log("Nova AI Loaded Successfully"); 
+
+//=========================================
+// Errors
+//=========================================
+
+recognition.onerror=(event)=>{
+
+    if(event.error==="not-allowed"){
+
+        listening=false;
+
+        statusText.innerHTML="❌ Microphone Permission Denied";
+
+    }
+
+};
+
+//=========================================
+// Settings
+//=========================================
+
+const settingsBtn=document.getElementById("settings-btn");
+
+if(settingsBtn){
+
+settingsBtn.onclick=()=>{
+
+alert(`Nova AI Assistant
+
+Version : 2.0
+
+Backend : Flask
+
+LLM : Groq
+
+Voice : Browser SpeechSynthesis`);
+
+}
+
+}
+
+//=========================================
+// Load
+//=========================================
+
+window.onload=()=>{
+
+statusText.innerHTML="🟢 Ready";
+
+userText.innerHTML="Waiting for your voice...";
+
+aiText.innerHTML="Hello 👋<br><br>How can I help you today?";
+
+};
+
+console.log("Nova AI Loaded Successfully");
