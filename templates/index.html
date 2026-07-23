@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nova AI Assistant</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<div class="background">
+    <div class="circle one"></div>
+    <div class="circle two"></div>
+</div>
+<div class="dashboard">
+    <!-- HEADER -->
+    <header class="header">
+        <div class="logo">
+            <img src="{{ url_for('static', filename='images/robot.png') }}"
+                 alt="Robot">
+        </div>
+        <div class="title">
+            <h1>Nova AI Assistant</h1>
+            <p>Your Smart AI Voice Assistant</p>
+        </div>
+        <div class="status">
+            <span id="status-text">
+                🟢 Ready
+            </span>
+        </div>
+    </header>
+    <!-- MAIN -->
+    <div class="main">
+        <!-- LEFT -->
+        <div class="left-card">
+            <div class="mic-box">
+                <button id="start-btn">
+                    🎤
+                </button>
+            </div>
+            <h2>
+                Voice Assistant
+            </h2>
+            <p>
+                Click once and start talking naturally.
+            </p>
+        </div>
+        <!-- RIGHT -->
+        <div class="right-card">
+            <div class="chat-card">
+                <div class="card-header">
+                    👤 You
+                </div>
+                <div
+                    id="user-text"
+                    class="card-body">
+                    Waiting for your voice...
+                </div>
+            </div>
+            <div class="chat-card">
+                <div class="card-header">
+                    🤖 Assistant
+                </div>
+                <div
+                    id="ai-text"
+                    class="card-body">
+                    Hello 👋
+                    <br><br>
+                    Ask me anything...
+                </div>
+            </div>
+                        <!-- ACTION BUTTONS -->
+            <div class="action-buttons">
+                <button id="start-chat" class="btn start">
+                    ▶ Start Chat
+                </button>
+                <button id="end-btn" class="btn end">
+                    ⏹ End Chat
+                </button>
+                <button id="clear-btn" class="btn new">
+                    🔄 New Chat
+                </button>
+                <button id="settings-btn" class="btn setting">
+                    ⚙ Settings
+                </button>
+            </div>
+        </div>
+    </div>
+    <!-- FOOTER -->
+    <footer class="footer">
+        <p>
+            © 2026 Nova AI Assistant | Powered by Flask & Groq AI
+        </p>
+    </footer>
+</div>
+<!-- JavaScript -->
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

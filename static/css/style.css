@@ -1,0 +1,240 @@
+/*==================================================
+        NOVA AI ASSISTANT - MODERN UI V2
+==================================================*/
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"Poppins",sans-serif;
+}
+body{
+    background:#07111f;
+    color:white;
+    overflow:hidden;
+    height:100vh;
+}
+/*================ BACKGROUND ================*/
+.background{
+    position:fixed;
+    inset:0;
+    z-index:-2;
+    overflow:hidden;
+}
+.circle{
+    position:absolute;
+    width:380px;
+    height:380px;
+    border-radius:50%;
+    filter:blur(120px);
+    opacity:.25;
+}
+.one{
+    background:#2563EB;
+    left:-120px;
+    top:-120px;
+}
+.two{
+    background:#7C3AED;
+    right:-120px;
+    bottom:-120px;
+}
+/*================ DASHBOARD ================*/
+.dashboard{
+    width:96%;
+    max-width:1350px;
+    height:95vh;
+    margin:auto;
+    margin-top:12px;
+    background:#111c2f;
+    border-radius:25px;
+    border:1px solid rgba(255,255,255,.08);
+    box-shadow:0 20px 60px rgba(0,0,0,.5);
+    display:flex;
+    flex-direction:column;
+    padding:20px;
+}
+/*================ HEADER ================*/
+.header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+}
+.logo img{
+    width:65px;
+    height:65px;
+    border-radius:50%;
+    background:linear-gradient(135deg,#2563EB,#7C3AED);
+    padding:6px;
+}
+.title{
+    flex:1;
+    margin-left:18px;
+}
+.title h1{
+    font-size:34px;
+    font-weight:700;
+}
+.title p{
+    color:#9CA3AF;
+    font-size:15px;
+    margin-top:4px;
+}
+.status{
+    background:#16A34A;
+    padding:8px 18px;
+    border-radius:30px;
+    font-size:15px;
+    font-weight:600;
+}
+/*================ MAIN ================*/
+.main{
+    flex:1;
+    display:grid;
+    grid-template-columns:260px 1fr;
+    gap:18px;
+    margin-top:18px;
+}
+/*================ LEFT CARD =================*/
+.left-card{
+    background:#18263f;
+    border-radius:20px;
+    padding:20px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    border:1px solid rgba(255,255,255,.08);
+}
+.mic-box{
+    margin-bottom:20px;
+}
+#start-btn{
+    width:85px;
+    height:85px;
+    border:none;
+    border-radius:50%;
+    cursor:pointer;
+    color:white;
+    font-size:34px;
+    background:linear-gradient(135deg,#2563EB,#7C3AED);
+    box-shadow:
+    0 0 20px rgba(37,99,235,.5)
+    0 0 40px rgba(124,58,237,.35);
+    transition:.3s;
+    animation:pulse 2s infinite;
+}
+#start-btn:hover{
+    transform:scale(1.08);
+}
+.left-card h2{
+    margin-top:10px;
+    font-size:22px;
+}
+.left-card p{
+    margin-top:8px;
+    color:#94A3B8;
+    text-align:center;
+    font-size:14px;
+}
+/*================ RIGHT =================*/
+.right-card{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+}
+.chat-card{
+    background:#18263f;
+    border-radius:18px;
+    padding:18px;
+    border:1px solid rgba(255,255,255,.08);
+    flex:1;
+    transition:.3s;
+}
+.chat-card:hover{
+    border-color:#3B82F6;
+    transform:translateY(-2px);
+}
+.card-header{
+    color:#60A5FA;
+    font-size:18px;
+    font-weight:600;
+    margin-bottom:10px;
+}
+.card-body{
+    color:#E5E7EB;
+    line-height:1.6;
+    font-size:15px;
+    min-height:80px;
+}
+/*================ BUTTONS =================*/
+.action-buttons{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:10px;
+    margin-top:15px;
+}
+.btn{
+    height:44px;
+    border:none;
+    border-radius:12px;
+    color:white;
+    cursor:pointer;
+    font-size:14px;
+    font-weight:600;
+    transition:.3s;
+}
+.btn:hover{
+    transform:translateY(-2px);
+}
+.start{
+    background:#16A34A;
+}
+.end{
+    background:#DC2626;
+}
+.new{
+    background:#7C3AED;
+}
+.setting{
+    background:#2563EB;
+}
+/*================ FOOTER =================*/
+.footer{
+    text-align:center;
+    color:#94A3B8;
+    font-size:13px;
+    margin-top:10px;
+}
+/*================ MIC ANIMATION =================*/
+@keyframes pulse{
+0%{
+box-shadow:0 0 15px rgba(37,99,235,.4);
+}
+50%{
+box-shadow:0 0 35px rgba(37,99,235,.9);
+}
+100%{
+box-shadow:0 0 15px rgba(37,99,235,.4);
+}
+}
+/*================ RESPONSIVE =================*/
+@media(max-width:900px){
+.dashboard{
+height:auto;
+overflow:auto;
+}
+.main{
+grid-template-columns:1fr;
+}
+.action-buttons{
+grid-template-columns:repeat(2,1fr);
+}
+.header{
+flex-direction:column;
+text-align:center;
+gap:10px;
+}
+.title{
+margin-left:0;
+}
+}
