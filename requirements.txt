@@ -3,7 +3,5 @@ groq
 python-dotenv
 SpeechRecognition
 gTTS
-pygame
 requests
-PyAudio
 gunicorn
